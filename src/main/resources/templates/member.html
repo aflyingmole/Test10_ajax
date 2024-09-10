@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <title>member.html</title>
+</head>
+<body>
+<h1 id="title">회원등록</h1>
+<form method="post" th:action="@{/member/join}">
+    아이디 <input type="text" name="id" id="id" ><br>
+    비밀번호 <input type="password" name="pwd" id="pwd"><br>
+    이메일 <input type="text" name="email" id="email"><br>
+    나이 <input type="text" name="age" id="age"><br>
+    <input type="submit" value="가입" id="submit">
+</form>
+<div>
+    <table class="table" id="memList">
+        <script th:inline="javascript">
+            function list() {
+                $.ajax({
+                    url: '/member/list',
+                    type: 'get',
+                    success: function (data) {
+                        $("#memList").empty();
+                        let th = "<tr><th>아이디</th><th>이메일</th><th>나이</th><th>가입일</th><th>수정</th><th>삭제</th>";
+                        $("#memList").append(th);
+                        $(data).each(function (i, mem) {
+                            console.log(mem);
+                            let tr = "<tr>" +
+                                "<td>" + mem.id + "</td>" +
+                                "<td>" + mem.email + "</td>" +
+                                "<td>" + mem.age + "</td>" +
+                                "<td>" + mem.regdate + "</td>" +
+                                "<td><a href=\"javascript:update('" + mem.id + "')\">수정</a></td>" +
+                                "<td><a href=\"javascript:deleteMember('" + mem.id + "')\">삭제</a></td>" +
+                                "</tr>"
+                            $("#memList").append(tr);
+                        });
+                    },
+                })
+            }
+
+            list();
+        </script>
+    </table>
+    <script th:inline="javascript">
+        function deleteMember(id) {
+            $.ajax({
+                url: 'member/delete/' +id,
+                type: 'delete',
+                success: function (data) {
+                    alert(data);
+                    list();
+                },
+            })
+        }
+        function update(id){
+            $.ajax({
+                url : 'member/update/' +id,
+                type : 'get',
+                success : function (data) {
+                    $("#title").html("<h1>회원수정</h1>");
+                    $("#id").val(data.id);
+                    $("#pwd").val(data.pwd);
+                    $("#email").val(data.email);
+                    $("#age").val(data.age);
+                    $("#submit").val("수정");
+                },
+
+            })
+        }
+
+    </script>
+</div>
+<script th:inline="javascript">
+    $('form').submit(function (e) {
+        e.preventDefault();
+        let param = $(this).serialize(); // id=hello&pwd=1234&email=111@ -> 쿼리스트링 문자열로만들기(직렬화)
+        if ($("#submit").val() == "수정") {
+            let url = 'member/update';
+            $.ajax({
+                url: url,
+                type: 'post',
+                data: param,
+                success: function (data) {
+                    alert(data);
+                    list();
+                    $("#title").html("<h1>회원등록</h1>");
+                    $("#id").val("");
+                    $("#pwd").val("");
+                    $("#email").val("");
+                    $("#age").val("");
+                    $("#submit").val("가입");
+                },
+            });
+        }else {
+            $.ajax({
+                url: '/member/join',
+                type: 'post',
+                data: param,
+                success: function (result) {
+                    if (result == "success") {
+                        alert('성공');
+                        list();
+                    } else {
+                        alert('실패');
+                    }
+                },
+            });
+        }
+    });
+</script>
+
+</body>
+</html>

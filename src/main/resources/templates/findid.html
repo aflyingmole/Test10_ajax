@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>findid.html</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+<div>
+    비밀번호 <input type="text" id="pwd"><br>
+    이메일 <input type="text" id="email"><br>
+    <button id="find">아이디찾기</button>
+    <div id="userinfo"></div>
+</div>
+<script>
+        $('#find').click(function() {
+            var pwd = $('#pwd').val();
+            var email = $('#email').val();
+            $.ajax({
+                url: '/find',
+                type: 'post',
+                data: {
+                    pwd: pwd,
+                    email: email
+                },
+                success: function (data) {
+                    $('#userinfo').text("아이디 : " + data);
+                },
+            });
+        });
+</script>
+</body>
+</html>

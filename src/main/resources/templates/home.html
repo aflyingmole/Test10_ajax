@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>home.html</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+</head>
+<body>
+<a th:href="@{/member}">회원관리페이지로 이동</a><br>
+<a th:href="@{/find}">회원찾기</a>
+
+<h1>❤️😍😊💕😘👌</h1>
+
+<button id="btn1">button1</button>
+<div id="result1"></div>
+
+<button id="btn2">button2</button>
+<div id="result2"></div>
+
+<button id="btn3">button3</button>
+<div id="result3"></div>
+
+<script type="text/javascript">
+    $("#btn1").click(function () {
+        // alert('안뇽');
+        $.ajax({
+            url: '/user/info', // controller
+            type: 'get',
+            dataType: 'JSON',
+            success: function (result) {
+                // alert('success')
+                console.log(result)
+                let user = "아이디 : " + result.id + "<br>" +
+                    "비밀번호 : " + result.password + "<br>" +
+                    "이메일 : " + result.email;
+                $('#result1').html(user);
+            },
+        })
+    });
+
+    $("#btn2").click(function () {
+        $.ajax({
+            url: '/user/info1/hello/1234',
+            type: 'get',
+            dataType: 'json',
+            success: function (result) {
+                console.log(result)
+                let user = "아이디 : " + result.id + "<br>" +
+                    "비밀번호 : " + result.password + "<br>" +
+                    "이메일 : " + result.email;
+                $('#result2').html(user);
+            },
+        })
+    });
+    $("#btn3").click(function () {
+        $.ajax({
+            url: '/user/list',
+            dataType : 'json',
+            type : 'get',
+            success: function (result) {
+                for (let i = 0; i < result.length; i++) {
+                    let user = "<p>아이디 : " + result[i].id + "<br>" +
+                    "비밀번호 : " + result[i].password + "<br>" +
+                        "이메일 : " + result[i].email + "</p>";
+                    $('#result3').append(user);
+                }
+            },
+        })
+    });
+</script>
+</body>
+</html>
